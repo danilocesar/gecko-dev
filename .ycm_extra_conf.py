@@ -21,6 +21,21 @@ mach_module = imp.load_module('_mach', open(path), path, ('', 'r', imp.PY_SOURCE
 
 sys.dont_write_bytecode = old_bytecode
 
+def checkFlag(flag):
+    # This flag is added by Fennec for android build and causes ycmd to fail to parse the file.
+    # Removing this flag is a workaround until ycmd starts to handle this flag properly.
+    # https://github.com/Valloric/YouCompleteMe/issues/1490
+    if flag.startswith('-march=armv'):
+        return None
+
+    # This flag is not recognized by Clang. GCC defines __ANDROID__ when it's being used and our
+    # STL requires it to build properly
+    # https://github.com/Valloric/YouCompleteMe/issues/1494
+    elif flag == '-mandroid':
+        return '-D__ANDROID__'
+
+    return flag
+
 def FlagsForFile(filename):
     mach = mach_module.get_mach()
     out = StringIO()
@@ -28,11 +43,7 @@ def FlagsForFile(filename):
     mach.run(['compileflags', filename], stdout=out, stderr=out)
 
     flag_list = shlex.split(out.getvalue())
-
-    # This flag is added by Fennec for android build and causes ycmd to fail to parse the file.
-    # Removing this flag is a workaround until ycmd starts to handle this flag properly.
-    # https://github.com/Valloric/YouCompleteMe/issues/1490
-    final_flags = [x for x in flag_list if not x.startswith('-march=armv')]
+    final_flags = [checkFlag(x) for x in flag_list if checkFlag(x)]
 
     return {
         'flags': final_flags,
