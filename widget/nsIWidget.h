@@ -9,6 +9,7 @@
 #include "nsISupports.h"
 #include "nsColor.h"
 #include "nsRect.h"
+#include "FrameMetrics.h"
 #include "nsStringGlue.h"
 
 #include "nsCOMPtr.h"
@@ -824,6 +825,7 @@ class nsIWidget : public nsISupports {
     typedef mozilla::widget::SizeConstraints SizeConstraints;
     typedef mozilla::widget::TextEventDispatcher TextEventDispatcher;
     typedef mozilla::CompositorVsyncDispatcher CompositorVsyncDispatcher;
+    typedef mozilla::layers::ZoomConstraints ZoomConstraints;
 
     // Used in UpdateThemeGeometries.
     struct ThemeGeometry {
@@ -2396,6 +2398,10 @@ public:
      * determine how widget coordinates will be rounded.
      */
     virtual int32_t RoundsWidgetCoordinatesTo() { return 1; }
+
+    virtual void UpdateZoomConstraints(const ZoomConstraints &constraints,
+                                     uint32_t aPresShellId,
+                                     mozilla::layers::FrameMetrics::ViewID aViewId) { };
 
     /**
      * GetTextEventDispatcher() returns TextEventDispatcher belonging to the

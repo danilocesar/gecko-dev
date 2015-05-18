@@ -100,6 +100,10 @@ public:
     return false;
   }
 
+  virtual void SetRootZoomConstraints(const ZoomConstraints& aConstraints)
+  {
+  }
+
   /**
    * APZ uses |FrameMetrics::mCompositionBounds| for hit testing. Sometimes,
    * widget code has knowledge of a touch-sensitive region that should

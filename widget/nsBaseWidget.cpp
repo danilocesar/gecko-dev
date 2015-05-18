@@ -20,6 +20,7 @@
 #include "nsISimpleEnumerator.h"
 #include "nsIContent.h"
 #include "nsIDocument.h"
+#include "Element.h"
 #include "nsIPresShell.h"
 #include "nsIServiceManager.h"
 #include "mozilla/Preferences.h"
@@ -987,6 +988,7 @@ void nsBaseWidget::ConfigureAPZCTreeManager()
   if (controller) {
     uint64_t rootLayerTreeId = mCompositorParent->RootLayerTreeId();
     CompositorParent::SetControllerForLayerTree(rootLayerTreeId, controller);
+    mGeckoContentController = controller;
   }
 }
 
@@ -1858,6 +1860,19 @@ nsBaseWidget::UnregisterPluginWindowForRemoteUpdates()
   MOZ_ASSERT(sPluginWidgetList);
   sPluginWidgetList->Remove(id);
 #endif
+}
+
+void nsBaseWidget::UpdateZoomConstraints(const ZoomConstraints& aConstraints,
+                                         uint32_t aPresShellId,
+                                         mozilla::layers::FrameMetrics::ViewID aViewId)
+{
+  if (!mCompositorParent || !mAPZC) {
+      return;
+  }
+
+  uint64_t layersId = mCompositorParent->RootLayerTreeId();
+  mAPZC->UpdateZoomConstraints(ScrollableLayerGuid(layersId, aPresShellId, aViewId), aConstraints);
+  mGeckoContentController->SetRootZoomConstraints(aConstraints);
 }
 
 // static

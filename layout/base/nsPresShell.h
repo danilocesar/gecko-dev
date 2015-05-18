@@ -33,6 +33,7 @@
 #include "nsContentUtils.h" // For AddScriptBlocker().
 #include "nsRefreshDriver.h"
 #include "TouchManager.h"
+#include "ZoomConstraintsClient.h"
 #include "mozilla/Attributes.h"
 #include "mozilla/EventForwards.h"
 #include "mozilla/MemoryReporting.h"
@@ -805,6 +806,8 @@ private:
   nsCOMPtr<nsIContent>      mCurrentEventContent;
   nsTArray<nsIFrame*>       mCurrentEventFrameStack;
   nsCOMArray<nsIContent>    mCurrentEventContentStack;
+
+
 protected:
   nsRevocableEventPtr<nsSynthMouseMoveEvent> mSynthMouseMoveEvent;
   nsCOMPtr<nsIContent>      mLastAnchorScrolledTo;
@@ -812,6 +815,8 @@ protected:
   nsRefPtr<nsCaret>         mOriginalCaret;
   nsCallbackEventRequest*   mFirstCallbackEventRequest;
   nsCallbackEventRequest*   mLastCallbackEventRequest;
+
+  nsRefPtr<ZoomConstraintsClient> mZoomConstraintsClient;
 
   // TouchManager
   TouchManager              mTouchManager;

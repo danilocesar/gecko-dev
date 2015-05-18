@@ -315,6 +315,10 @@ public:
 
   void Shutdown();
 
+  virtual void UpdateZoomConstraints(const ZoomConstraints &constraints,
+                                     uint32_t aPresShellId,
+                                     mozilla::layers::FrameMetrics::ViewID aViewId) override;
+
 protected:
 
   void            ResolveIconName(const nsAString &aIconName,
@@ -474,6 +478,7 @@ protected:
   nsRefPtr<mozilla::CompositorVsyncDispatcher> mCompositorVsyncDispatcher;
   nsRefPtr<APZCTreeManager> mAPZC;
   nsRefPtr<APZEventState> mAPZEventState;
+  nsRefPtr<GeckoContentController> mGeckoContentController;
   nsRefPtr<SetAllowedTouchBehaviorCallback> mSetAllowedTouchBehaviorCallback;
   nsRefPtr<WidgetShutdownObserver> mShutdownObserver;
   nsRefPtr<TextEventDispatcher> mTextEventDispatcher;

@@ -982,6 +982,9 @@ PresShell::Init(nsIDocument* aDocument,
   SetupFontInflation();
 
   mTouchManager.Init(this, mDocument);
+
+  mZoomConstraintsClient = new ZoomConstraintsClient();
+  mZoomConstraintsClient->Init(this, mDocument);
 }
 
 enum TextPerfLogType {
@@ -1290,6 +1293,11 @@ PresShell::Destroy()
   mHaveShutDown = true;
 
   mTouchManager.Destroy();
+
+  if (mZoomConstraintsClient) {
+    mZoomConstraintsClient->Destroy();
+    mZoomConstraintsClient = nullptr;
+  }
 }
 
 void

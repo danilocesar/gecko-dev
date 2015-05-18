@@ -26,6 +26,7 @@ ChromeProcessController::ChromeProcessController(nsIWidget* aWidget,
   : mWidget(aWidget)
   , mAPZEventState(aAPZEventState)
   , mUILoop(MessageLoop::current())
+  , mHaveZoomConstraints(false)
 {
   // Otherwise we're initializing mUILoop incorrectly.
   MOZ_ASSERT(NS_IsMainThread());
@@ -220,4 +221,20 @@ ChromeProcessController::NotifyMozMouseScrollEvent(const FrameMetrics::ViewID& a
   }
 
   APZCCallbackHelper::NotifyMozMouseScrollEvent(aScrollId, aEvent);
+}
+
+bool
+ChromeProcessController::GetRootZoomConstraints(mozilla::layers::ZoomConstraints *aOutConstraints)
+{
+    if (mHaveZoomConstraints && aOutConstraints) {
+        *aOutConstraints = mCachedZoomConstraints;
+    }
+    return mHaveZoomConstraints;
+}
+
+void
+ChromeProcessController::SetRootZoomConstraints(const mozilla::layers::ZoomConstraints& aConstraints)
+{
+    mCachedZoomConstraints = aConstraints;
+    mHaveZoomConstraints = true;
 }

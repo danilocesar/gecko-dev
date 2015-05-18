@@ -22,6 +22,7 @@ namespace mozilla {
 namespace layers {
 
 class APZEventState;
+class ZoomConstraints;
 
 // A ChromeProcessController is attached to the root of a compositor's layer
 // tree.
@@ -29,6 +30,7 @@ class ChromeProcessController : public mozilla::layers::GeckoContentController
 {
   typedef mozilla::layers::FrameMetrics FrameMetrics;
   typedef mozilla::layers::ScrollableLayerGuid ScrollableLayerGuid;
+  typedef mozilla::layers::ZoomConstraints ZoomConstraints;
 
 public:
   explicit ChromeProcessController(nsIWidget* aWidget, APZEventState* aAPZEventState);
@@ -56,10 +58,17 @@ public:
                                     int aArg) override;
   virtual void NotifyMozMouseScrollEvent(const FrameMetrics::ViewID& aScrollId,
                                          const nsString& aEvent) override;
+
+  virtual bool GetRootZoomConstraints(ZoomConstraints *aOutConstraints) override;
+  virtual void SetRootZoomConstraints(const ZoomConstraints &aConstraints) override;
+
 private:
   nsCOMPtr<nsIWidget> mWidget;
   nsRefPtr<APZEventState> mAPZEventState;
   MessageLoop* mUILoop;
+
+  bool mHaveZoomConstraints;
+  ZoomConstraints mCachedZoomConstraints;
 
   void InitializeRoot();
   float GetPresShellResolution() const;

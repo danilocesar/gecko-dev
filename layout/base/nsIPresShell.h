@@ -112,6 +112,7 @@ class ShadowRoot;
 
 namespace layers {
 class LayerManager;
+class ZoomConstraints;
 } // namespace layers
 
 namespace gfx {
